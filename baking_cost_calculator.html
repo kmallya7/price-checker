@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Calculator</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background-color: #f4f4f9; 
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #444;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Baking Cost Calculator</h1>
+    <div class="container">
+        <h2>Ingredients List</h2>
+        <table id="ingredientsTable">
+            <thead>
+                <tr>
+                    <th>Ingredient Name</th>
+                    <th>Total Weight</th>
+                    <th>Total Cost (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="ingredientsTableBody">
+                <!-- Rows will be added dynamically -->
+            </tbody>
+        </table>
+
+        <h2>Calculate Cost</h2>
+        <form id="calculateForm">
+            <label for="ingredientSelect">Select Ingredient:</label>
+            <select id="ingredientSelect"></select><br>
+            <label for="usedWeight">Weight Used (in grams/ml/kg/l):</label>
+            <input type="number" id="usedWeight" step="0.01"><br>
+            <button type="button" onclick="calculateUsedCost()">Calculate Cost</button>
+        </form>
+        <h2>Cost for Used Ingredient: ₹<span id="usedCost">0</span></h2>
+    </div>
+
+    <script>
+        const ingredients = [
+            { name: 'Cream cheese', totalWeight: '1 KG', totalCost: 750 },
+            { name: 'Ecotrop', totalWeight: '1 KG', totalCost: 170 },
+            { name: 'Amul butter', totalWeight: '1 KG', totalCost: 580 },
+            { name: 'IFF Vanilla', totalWeight: '500 ML', totalCost: 230 },
+            { name: 'Milk choco chips', totalWeight: '250 GM', totalCost: 110 },
+            { name: 'Caster sugar', totalWeight: '1 KG', totalCost: 120 },
+            { name: 'Icing sugar', totalWeight: '1 KG', totalCost: 130 },
+            { name: 'Cake gel', totalWeight: '1 KG', totalCost: 95 },
+            { name: 'Fresh cream', totalWeight: '500 GM', totalCost: 275 },
+            { name: 'Milk maid', totalWeight: '380 GM', totalCost: 134 },
+            { name: 'Hazelnut paste', totalWeight: '1 KG', totalCost: 500 },
+            { name: 'Morde dark chocolate', totalWeight: '500 GM', totalCost: 195 },
+            { name: 'Morde white compound', totalWeight: '500 GM', totalCost: 185 },
+            { name: 'Pectin', totalWeight: '250 GM', totalCost: 440 },
+            { name: 'Bread improver', totalWeight: '500 GM', totalCost: 105 },
+            { name: 'Gluten', totalWeight: '1 KG', totalCost: 240 },
+            { name: 'Morde dark compound', totalWeight: '500 GM', totalCost: 320 },
+            { name: 'Milk powder', totalWeight: '250 GM', totalCost: 100 }
+        ];
+
+        function populateIngredientsTable() {
+            const tableBody = document.getElementById('ingredientsTableBody');
+            tableBody.innerHTML = '';
+            ingredients.forEach(ingredient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ingredient.name}</td>
+                    <td>${ingredient.totalWeight}</td>
+                    <td>₹${ingredient.totalCost}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function populateIngredientSelect() {
+            const select = document.getElementById('ingredientSelect');
+            select.innerHTML = '';
+            ingredients.forEach((ingredient, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = ingredient.name;
+                select.appendChild(option);
+            });
+        }
+
+        function calculateUsedCost() {
+            const selectedIndex = document.getElementById('ingredientSelect').value;
+            const selectedIngredient = ingredients[selectedIndex];
+            const usedWeight = parseFloat(document.getElementById('usedWeight').value);
+            const totalWeightInGrams = convertToGrams(selectedIngredient.totalWeight);
+
+            if (isNaN(totalWeightInGrams) || isNaN(selectedIngredient.totalCost) || isNaN(usedWeight)) {
+                alert("Please enter valid numbers.");
+                return;
+            }
+
+            const costPerGram = selectedIngredient.totalCost / totalWeightInGrams;
+            const usedCost = costPerGram * usedWeight;
+
+            document.getElementById('usedCost').textContent = usedCost.toFixed(2);
+        }
+
+        function convertToGrams(weightStr) {
+            const weight = parseFloat(weightStr);
+            if (weightStr.includes('KG')) {
+                return weight * 1000;
+            } else if (weightStr.includes('ML') || weightStr.includes('GM')) {
+                return weight;
+            }
+            return NaN; // Not a valid weight
+        }
+
+        // Populate table and select options on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            populateIngredientsTable();
+            populateIngredientSelect();
+        });
+    </script>
+</body>
+</html>
