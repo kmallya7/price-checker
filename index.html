@@ -17,16 +17,18 @@
         }
         .container {
             display: flex;
+            flex-direction: row;
             justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .section {
+            flex: 1;
+            margin: 10px;
             padding: 20px;
             background-color: #fff;
             border: none;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .section {
-            flex: 1;
-            margin: 0 10px;
         }
         .table {
             font-size: 13px;
@@ -51,28 +53,14 @@
             padding: 8px;
             font-size: 14px;
         }
+        .ingredients-container {
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Baking Cost Calculator</h1>
     <div class="container">
-        <div class="section">
-            <h2>Ingredients List</h2>
-            <table id="ingredientsTable" class="table table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th>Ingredient Name</th>
-                        <th>Total Weight</th>
-                        <th>Total Cost (₹)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="ingredientsTableBody">
-                    <!-- Rows will be added dynamically -->
-                </tbody>
-            </table>
-        </div>
-
         <div class="section">
             <h2>Calculate Cost</h2>
             <form id="calculateForm">
@@ -91,7 +79,6 @@
                 <button type="button" class="btn btn-success mt-3" onclick="calculateUsedCost()">Calculate Cost</button>
             </form>
         </div>
-
         <div class="section">
             <h2>Calculation Summary</h2>
             <table id="calculationSummaryTable" class="table table-bordered table-sm">
@@ -109,6 +96,22 @@
             </table>
             <h2>Total Cost: ₹<span id="totalCost">0</span></h2>
         </div>
+    </div>
+    <div class="ingredients-container">
+        <h2>Ingredients List</h2>
+        <table id="ingredientsTable" class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Ingredient Name</th>
+                    <th>Total Weight</th>
+                    <th>Total Cost (₹)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ingredientsTableBody">
+                <!-- Rows will be added dynamically -->
+            </tbody>
+        </table>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
@@ -291,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateIngredientsTable();
     populateIngredientSelect();
 });
+
     </script>
 </body>
 </html>
