@@ -183,12 +183,16 @@ function updateCalculationSummary() {
     const tableBody = document.getElementById('calculationSummaryBody');
     tableBody.innerHTML = '';
     let totalCost = 0;
-    calculations.forEach(calculation => {
+    calculations.forEach((calculation, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${calculation.name}</td>
             <td>${calculation.usedWeight}</td>
             <td>₹${calculation.cost}</td>
+            <td>
+                <button class="btn btn-primary btn-sm" onclick="editCalculation(${index})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteCalculation(${index})">Delete</button>
+            </td>
         `;
         totalCost += parseFloat(calculation.cost);
         tableBody.appendChild(row);
@@ -219,6 +223,35 @@ function deleteIngredient(index) {
     ingredients.splice(index, 1);
     populateIngredientsTable();
     populateIngredientSelect();
+}
+
+function editCalculation(index) {
+    const calculation = calculations[index];
+    const newWeight = prompt("Edit Weight Used:", calculation.usedWeight.split(' ')[0]);
+    const newUnit = prompt("Edit Unit (grams/kilograms/milliliters/liters):", calculation.usedWeight.split(' ')[1]);
+    const ingredient = ingredients.find(ing => ing.name === calculation.name);
+
+    if (ingredient && newWeight && newUnit && !isNaN(newWeight)) {
+        const totalWeightInGrams = convertToGrams(ingredient.totalWeight);
+        const usedWeightInGrams = convertToGrams(`${newWeight} ${newUnit}`);
+        const costPerGram = ingredient.totalCost / totalWeightInGrams;
+        const usedCost = costPerGram * usedWeightInGrams;
+
+        calculations[index] = {
+            name: calculation.name,
+            usedWeight: `${newWeight} ${newUnit}`,
+            cost: usedCost.toFixed(2)
+        };
+
+        updateCalculationSummary();
+    } else {
+        alert("Please enter valid details.");
+    }
+}
+
+function deleteCalculation(index) {
+    calculations.splice(index, 1);
+    updateCalculationSummary();
 }
 
 // Populate table and select options on page load
