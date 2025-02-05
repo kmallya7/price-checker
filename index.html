@@ -142,98 +142,99 @@
             { name: 'Bread improver', totalWeight: '500 GM', totalCost: 105 },
             { name: 'Gluten', totalWeight: '1 KG', totalCost: 240 },
             { name: 'Morde dark compound', totalWeight: '500 GM', totalCost: 320 },
-            { name: 'Milk powder', totalWeight: '250 GM', totalCost: 100 },
-            { name: 'Raagi powder', totalWeight: '500 GM', totalCost: 50 },
-            { name: 'Whipping cream rich', totalWeight: '500 GM', totalCost: 148 }
+            { name: 'Milk powder', totalWeight: '250 GM', totalCost: 100 }
         ];
-        
+
         const calculations = [];
 
-function populateIngredientsTable() {
-    const tableBody = document.getElementById('ingredientsTableBody');
-    tableBody.innerHTML = '';
-    ingredients.forEach(ingredient => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${ingredient.name}</td>
-            <td>${ingredient.totalWeight}</td>
-            <td>₹${ingredient.totalCost}</td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
+        function populateIngredientsTable() {
+            const tableBody = document.getElementById('ingredientsTableBody');
+            tableBody.innerHTML = '';
+            ingredients.forEach(ingredient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${ingredient.name}</td>
+                    <td>${ingredient.totalWeight}</td>
+                    <td>₹${ingredient.totalCost}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
 
-function populateIngredientSelect() {
-    const select = document.getElementById('ingredientSelect');
-    select.innerHTML = '';
-    ingredients.forEach((ingredient, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = ingredient.name;
-        select.appendChild(option);
-    });
-}
+        function populateIngredientSelect() {
+            const select = document.getElementById('ingredientSelect');
+            select.innerHTML = '';
+            ingredients.forEach((ingredient, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = ingredient.name;
+                select.appendChild(option);
+            });
+        }
 
-function calculateUsedCost() {
-    const selectedIndex = document.getElementById('ingredientSelect').value;
-    const selectedIngredient = ingredients[selectedIndex];
-    const usedWeight = parseFloat(document.getElementById('usedWeight').value);
-    const weightUnit = document.getElementById('weightUnit').value;
-    const totalWeightInGrams = convertToGrams(selectedIngredient.totalWeight);
+        function calculateUsedCost() {
+            const selectedIndex = document.getElementById('ingredientSelect').value;
+            const selectedIngredient = ingredients[selectedIndex];
+            const usedWeight = parseFloat(document.getElementById('usedWeight').value);
+            const weightUnit = document.getElementById('weightUnit').value;
+            const totalWeightInGrams = convertToGrams(selectedIngredient.totalWeight);
 
-    if (isNaN(totalWeightInGrams) || isNaN(selectedIngredient.totalCost) || isNaN(usedWeight)) {
-        alert("Please enter valid numbers.");
-        return;
-    }
+            if (isNaN(totalWeightInGrams) || isNaN(selectedIngredient.totalCost) || isNaN(usedWeight)) {
+                alert("Please enter valid numbers.");
+                return;
+            }
 
-    const usedWeightInGrams = convertToGrams(usedWeight + ' ' + weightUnit);
-    const costPerGram = selectedIngredient.totalCost / totalWeightInGrams;
-    const usedCost = costPerGram * usedWeightInGrams;
+            const usedWeightInGrams = convertToGrams(usedWeight + ' ' + weightUnit);
+            const costPerGram = selectedIngredient.totalCost / totalWeightInGrams;
+            const usedCost = costPerGram * usedWeightInGrams;
 
-    // Store the calculation in the calculations array
-    calculations.push({
-        name: selectedIngredient.name,
-        usedWeight: `${usedWeight} ${weightUnit}`,
-        cost: usedCost.toFixed(2)
-    });
+            // Store the calculation in the calculations array
+            calculations.push({
+                name: selectedIngredient.name,
+                usedWeight: `${usedWeight} ${weightUnit}`,
+                cost: usedCost.toFixed(2)
+            });
 
-    // Update the calculation summary table
-    updateCalculationSummary();
-}
+            // Update the calculation summary table
+            updateCalculationSummary();
+        }
 
-function convertToGrams(weightStr) {
-    const weight = parseFloat(weightStr);
-    if (weightStr.includes('KG') || weightStr.includes('kilograms')) {
-        return weight * 1000;
-    } else if (weightStr.includes('ML') || weightStr.includes('milliliters')) {
-        return weight; // Assuming density is 1:1 for simplicity
-    } else if (weightStr.includes('liters')) {
-        return weight * 1000; // Assuming density is 1:1 for simplicity
-    } else if (weightStr.includes('GM') || weightStr.includes('grams')) {
-        return weight;
-    }
-    return NaN; // Not a valid weight
-}
+        function convertToGrams(weightStr) {
+            const weight = parseFloat(weightStr);
+            if (weightStr.includes('KG') || weightStr.includes('kilograms')) {
+                return weight * 1000;
+            } else if (weightStr.includes('ML') || weightStr.includes('milliliters')) {
+                return weight; // Assuming density is 1:1 for simplicity
+            } else if (weightStr.includes('liters')) {
+                return weight * 1000; // Assuming density is 1:1 for simplicity
+            } else if (weightStr.includes('GM') || weightStr.includes('grams')) {
+                return weight;
+            }
+            return NaN; // Not a valid weight
+        }
 
-function updateCalculationSummary() {
-    const tableBody = document.getElementById('calculationSummaryBody');
-    tableBody.innerHTML = '';
-    let totalCost = 0;
-    calculations.forEach(calculation => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${calculation.name}</td>
-            <td>${calculation.usedWeight}</td>
-            <td>₹${calculation.cost}</td>
-        `;
-        totalCost += parseFloat(calculation.cost);
-        tableBody.appendChild(row);
-    });
-    document.getElementById('totalCost').textContent = totalCost.toFixed(2);
-}
+        function updateCalculationSummary() {
+            const tableBody = document.getElementById('calculationSummaryBody');
+            tableBody.innerHTML = '';
+            let totalCost = 0;
+            calculations.forEach(calculation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${calculation.name}</td>
+                    <td>${calculation.usedWeight}</td>
+                    <td>₹${calculation.cost}</td>
+                `;
+                totalCost += parseFloat(calculation.cost);
+                tableBody.appendChild(row);
+            });
+            document.getElementById('totalCost').textContent = totalCost.toFixed(2);
+        }
 
-// Populate table and select options on page load
-document.addEventListener('DOMContentLoaded', () => {
-    populateIngredientsTable();
-    populateIngredientSelect();
-});
+        // Populate table and select options on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            populateIngredientsTable();
+            populateIngredientSelect();
+        });
+    </script>
+</body>
+</html>
