@@ -4,24 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cost Calculator</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body { 
-            background: url('https://github.com/kmallya7/price-checker/blob/main/Calculator%20BG.png?raw=true') no-repeat center center fixed; 
+        body {
+            background: url('https://github.com/kmallya7/price-checker/blob/main/Calculator%20BG.png?raw=true') no-repeat center center fixed;
             background-size: cover;
             color: #333;
         }
+
         h1, h2, h3 {
             text-align: center;
             color: #444;
         }
+
         .container {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             margin-bottom: 20px;
         }
+
         .section {
             flex: 1;
             margin: 10px;
@@ -31,35 +33,76 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .table {
             font-size: 13px;
+            width: 100%;
         }
-        .table td, .table th {
+
+        .table td,
+        .table th {
             vertical-align: middle;
             padding: 6px;
+            text-align: center;
         }
+
         .table th {
             background-color: #f2f2f2;
         }
+
         label {
             display: block;
             margin: 10px 0 5px;
             color: #666;
         }
-        .input-group, .form-control {
+
+        .input-group,
+        .form-control {
             margin-bottom: 15px;
         }
+
         .btn {
             width: 100%;
             padding: 8px;
             font-size: 14px;
         }
+
         .ingredients-container {
             padding: 20px;
         }
+
+        .collapsible {
+            background-color: #eee;
+            color: #444;
+            cursor: pointer;
+            padding: 18px;
+            border: none;
+            text-align: center;
+            outline: none;
+            font-size: 15px;
+            margin: 10px auto;
+            display: block;
+            width: auto;
+        }
+
+        .active,
+        .collapsible:hover {
+            background-color: #ccc;
+        }
+
+        .content {
+            padding: 0; /* Remove padding from content */
+            display: block;
+            width: auto; /* Key change */
+            margin: 10px auto; /* Center */
+            overflow: hidden;
+            background-color: transparent; /* Make content background transparent */
+        }
+
         .compact-table {
             width: auto;
             margin: 0 auto;
+            background-color: #f1f1f1; /* White background on the table ONLY */
         }
     </style>
 </head>
@@ -92,32 +135,32 @@
                         <th>Ingredient Name</th>
                         <th>Weight Used</th>
                         <th>Cost (₹)</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="calculationSummaryBody">
-                    <!-- Rows will be added dynamically -->
-                </tbody>
+                    </tbody>
             </table>
             <h2>Total Cost: ₹<span id="totalCost">0</span></h2>
         </div>
     </div>
     <div class="ingredients-container">
-        <h2>Ingredients List</h2>
-        <table id="ingredientsTable" class="table table-bordered table-sm compact-table">
-            <thead>
-                <tr>
-                    <th>Ingredient Name</th>
-                    <th>Total Weight</th>
-                    <th>Total Cost (₹)</th>
-                </tr>
-            </thead>
-            <tbody id="ingredientsTableBody">
-                <!-- Rows will be added dynamically -->
-            </tbody>
-        </table>
+        <button class="collapsible">Show Ingredients</button>
+        <div class="content">
+            <table id="ingredientsTable" class="table table-bordered table-sm compact-table">
+                <thead>
+                    <tr>
+                        <th>Ingredient Name</th>
+                        <th>Total Weight</th>
+                        <th>Total Cost (₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="ingredientsTableBody">
+                    </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -145,12 +188,12 @@
             { name: 'Whipping cream rich', totalWeight: '500 GM', totalCost: 148 }
         ];
 
-        const calculations = [];
+   const calculations = [];
 
 function populateIngredientsTable() {
     const tableBody = document.getElementById('ingredientsTableBody');
     tableBody.innerHTML = '';
-    ingredients.forEach((ingredient, index) => {
+    ingredients.forEach(ingredient => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${ingredient.name}</td>
@@ -188,14 +231,12 @@ function calculateUsedCost() {
     const costPerGram = selectedIngredient.totalCost / totalWeightInGrams;
     const usedCost = costPerGram * usedWeightInGrams;
 
-    // Store the calculation in the calculations array
     calculations.push({
         name: selectedIngredient.name,
         usedWeight: `${usedWeight} ${weightUnit}`,
         cost: usedCost.toFixed(2)
     });
 
-    // Update the calculation summary table
     updateCalculationSummary();
 }
 
@@ -204,13 +245,13 @@ function convertToGrams(weightStr) {
     if (weightStr.includes('KG') || weightStr.includes('kilograms')) {
         return weight * 1000;
     } else if (weightStr.includes('ML') || weightStr.includes('milliliters')) {
-        return weight; // Assuming density is 1:1 for simplicity
+        return weight;
     } else if (weightStr.includes('liters')) {
-        return weight * 1000; // Assuming density is 1:1 for simplicity
+        return weight * 1000;
     } else if (weightStr.includes('GM') || weightStr.includes('grams')) {
         return weight;
     }
-    return NaN; // Not a valid weight
+    return NaN;
 }
 
 function updateCalculationSummary() {
@@ -232,31 +273,6 @@ function updateCalculationSummary() {
         tableBody.appendChild(row);
     });
     document.getElementById('totalCost').textContent = totalCost.toFixed(2);
-}
-
-function editIngredient(index) {
-    const ingredient = ingredients[index];
-    const name = prompt("Edit Ingredient Name:", ingredient.name);
-    const totalWeight = prompt("Edit Total Weight:", ingredient.totalWeight);
-    const totalCost = prompt("Edit Total Cost (₹):", ingredient.totalCost);
-
-    if (name && totalWeight && totalCost && !isNaN(totalCost)) {
-        ingredients[index] = {
-            name: name,
-            totalWeight: totalWeight,
-            totalCost: parseFloat(totalCost)
-        };
-        populateIngredientsTable();
-        populateIngredientSelect();
-    } else {
-        alert("Please enter valid details.");
-    }
-}
-
-function deleteIngredient(index) {
-    ingredients.splice(index, 1);
-    populateIngredientsTable();
-    populateIngredientSelect();
 }
 
 function editCalculation(index) {
@@ -288,11 +304,23 @@ function deleteCalculation(index) {
     updateCalculationSummary();
 }
 
-// Populate table and select options on page load
 document.addEventListener('DOMContentLoaded', () => {
     populateIngredientsTable();
     populateIngredientSelect();
 });
+
+// Collapsible table JavaScript
+const coll = document.querySelector(".collapsible");
+coll.addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+        content.style.display = "none";
+    } else {
+        content.style.display = "block";
+    }
+});
+
     </script>
 </body>
 </html>
