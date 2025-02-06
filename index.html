@@ -91,18 +91,18 @@
         }
 
         .content {
-            padding: 0; /* Remove padding from content */
+            padding: 0;
             display: block;
-            width: auto; /* Key change */
-            margin: 10px auto; /* Center */
+            width: auto;
+            margin: 10px auto;
             overflow: hidden;
-            background-color: transparent; /* Make content background transparent */
+            background-color: transparent;
         }
 
         .compact-table {
             width: auto;
             margin: 0 auto;
-            background-color: #f1f1f1; /* White background on the table ONLY */
+            background-color: #f1f1f1;
         }
     </style>
 </head>
@@ -146,7 +146,7 @@
     </div>
     <div class="ingredients-container">
         <button class="collapsible">Show Ingredients</button>
-        <div class="content">
+        <div class="content" hidden>
             <table id="ingredientsTable" class="table table-bordered table-sm compact-table">
                 <thead>
                     <tr>
@@ -164,31 +164,49 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
     <script>
         const ingredients = [
-            { name: 'Cream cheese', totalWeight: '1 KG', totalCost: 750 },
-            { name: 'Whipping cream topolite', totalWeight: '1 KG', totalCost: 170 },
-            { name: 'Amul butter', totalWeight: '1 KG', totalCost: 580 },
-            { name: 'IFF Vanilla', totalWeight: '500 ML', totalCost: 230 },
-            { name: 'Milk choco chips', totalWeight: '250 GM', totalCost: 110 },
-            { name: 'Caster sugar', totalWeight: '1 KG', totalCost: 120 },
-            { name: 'Icing sugar', totalWeight: '1 KG', totalCost: 130 },
-            { name: 'Cake gel', totalWeight: '1 KG', totalCost: 95 },
-            { name: 'Fresh cream', totalWeight: '500 GM', totalCost: 275 },
-            { name: 'Milk maid', totalWeight: '380 GM', totalCost: 134 },
-            { name: 'Hazelnut paste', totalWeight: '1 KG', totalCost: 500 },
-            { name: 'Morde dark chocolate', totalWeight: '500 GM', totalCost: 195 },
-            { name: 'Morde white compound', totalWeight: '500 GM', totalCost: 185 },
-            { name: 'Pectin', totalWeight: '250 GM', totalCost: 440 },
-            { name: 'Bread improver', totalWeight: '500 GM', totalCost: 105 },
-            { name: 'Gluten', totalWeight: '1 KG', totalCost: 240 },
-            { name: 'Morde dark compound', totalWeight: '500 GM', totalCost: 320 },
-            { name: 'Milk powder', totalWeight: '250 GM', totalCost: 100 },
-            { name: 'Raagi powder', totalWeight: '500 GM', totalCost: 50 },
-            { name: 'Whipping cream rich', totalWeight: '500 GM', totalCost: 148 }
-        ];
+    { name: 'Cream cheese', totalWeight: '1 KG', totalCost: 750 },
+    { name: 'Whipping cream topolite', totalWeight: '1 KG', totalCost: 170 },
+    { name: 'Amul butter', totalWeight: '1 KG', totalCost: 580 },
+    { name: 'IFF Vanilla', totalWeight: '500 ML', totalCost: 230 },
+    { name: 'Milk choco chips', totalWeight: '250 GM', totalCost: 110 },
+    { name: 'Caster sugar', totalWeight: '1 KG', totalCost: 120 },
+    { name: 'Icing sugar', totalWeight: '1 KG', totalCost: 130 },
+    { name: 'Cake gel', totalWeight: '1 KG', totalCost: 95 },
+    { name: 'Fresh cream', totalWeight: '500 GM', totalCost: 275 },
+    { name: 'Milk maid', totalWeight: '380 GM', totalCost: 134 },
+    { name: 'Hazelnut paste', totalWeight: '1 KG', totalCost: 500 },
+    { name: 'Morde dark chocolate', totalWeight: '500 GM', totalCost: 195 },
+    { name: 'Morde white compound', totalWeight: '500 GM', totalCost: 185 },
+    { name: 'Pectin', totalWeight: '250 GM', totalCost: 440 },
+    { name: 'Bread improver', totalWeight: '500 GM', totalCost: 105 },
+    { name: 'Gluten', totalWeight: '1 KG', totalCost: 240 },
+    { name: 'Morde dark compound', totalWeight: '500 GM', totalCost: 320 },
+    { name: 'Milk powder', totalWeight: '250 GM', totalCost: 100 },
+    { name: 'Raagi powder', totalWeight: '500 GM', totalCost: 50 },
+    { name: 'Whipping cream rich', totalWeight: '500 GM', totalCost: 148 }
+];
 
-   const calculations = [];
+const calculations = [];
+
+const contentDiv = document.querySelector('.content');
+const showIngredientsButton = document.querySelector('.collapsible');
+
+// Check localStorage for saved state
+const isTableVisible = localStorage.getItem('tableVisible') === 'true';
+
+// Set initial visibility based on localStorage
+contentDiv.hidden = !isTableVisible; // Hide if not in localStorage or false
+
+showIngredientsButton.addEventListener('click', function () {
+    this.classList.toggle("active");
+    contentDiv.hidden = !contentDiv.hidden;
+
+    // Save the state to localStorage
+    localStorage.setItem('tableVisible', !contentDiv.hidden);
+});
 
 function populateIngredientsTable() {
     const tableBody = document.getElementById('ingredientsTableBody');
@@ -307,18 +325,6 @@ function deleteCalculation(index) {
 document.addEventListener('DOMContentLoaded', () => {
     populateIngredientsTable();
     populateIngredientSelect();
-});
-
-// Collapsible table JavaScript
-const coll = document.querySelector(".collapsible");
-coll.addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-        content.style.display = "none";
-    } else {
-        content.style.display = "block";
-    }
 });
 
     </script>
