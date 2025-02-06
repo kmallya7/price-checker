@@ -143,6 +143,43 @@
             </table>
             <h2>Total Cost: ₹<span id="totalCost">0</span></h2>
         </div>
+        <div class="section">
+            <h2>Final Cost Breakdown</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="labourCost">Labour Cost (₹):</label>
+                    <input type="number" id="labourCost" class="form-control" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label for="electricityCost">Electricity Cost (₹):</label>
+                    <input type="number" id="electricityCost" class="form-control" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label for="packagingCost">Packaging Cost (₹):</label>
+                    <input type="number" id="packagingCost" class="form-control" value="0">
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <label for="maintenanceCost">Maintenance Cost (₹):</label>
+                    <input type="number" id="maintenanceCost" class="form-control" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label for="licensingCost">Licensing Cost (₹):</label>
+                    <input type="number" id="licensingCost" class="form-control" value="0">
+                </div>
+                <div class="col-md-4">
+                    <label for="profitMultiplier">Profit Multiplier:</label>
+                    <select id="profitMultiplier" class="form-control">
+                        <option value="2">2x</option>
+                        <option value="3">3x</option>
+                        <option value="0.30">30%</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary mt-3" onclick="calculateFinalCost()">Calculate Final Cost</button><br><br>
+            <label>Total Cost (including profit): ₹<span id="finalTotalCost" style="font-weight: bold;">0</span></label>
+        </div>
     </div>
     <div class="ingredients-container">
         <button class="collapsible">Show Ingredients</button>
@@ -165,8 +202,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="script.js"></script>
+
     <script>
         const ingredients = [
+    { name: 'Cocoa powder', totalWeight: '225 GM', totalCost: 360 },        
     { name: 'Cream cheese', totalWeight: '1 KG', totalCost: 750 },
     { name: 'Whipping cream topolite', totalWeight: '1 KG', totalCost: 170 },
     { name: 'Amul butter', totalWeight: '1 KG', totalCost: 580 },
@@ -194,17 +233,12 @@ const calculations = [];
 const contentDiv = document.querySelector('.content');
 const showIngredientsButton = document.querySelector('.collapsible');
 
-// Check localStorage for saved state
 const isTableVisible = localStorage.getItem('tableVisible') === 'true';
-
-// Set initial visibility based on localStorage
-contentDiv.hidden = !isTableVisible; // Hide if not in localStorage or false
+contentDiv.hidden = !isTableVisible;
 
 showIngredientsButton.addEventListener('click', function () {
     this.classList.toggle("active");
     contentDiv.hidden = !contentDiv.hidden;
-
-    // Save the state to localStorage
     localStorage.setItem('tableVisible', !contentDiv.hidden);
 });
 
@@ -322,11 +356,37 @@ function deleteCalculation(index) {
     updateCalculationSummary();
 }
 
+function calculateFinalCost() {
+    const totalIngredientCost = parseFloat(document.getElementById('totalCost').textContent);
+    const labourCost = parseFloat(document.getElementById('labourCost').value);
+    const electricityCost = parseFloat(document.getElementById('electricityCost').value);
+    const packagingCost = parseFloat(document.getElementById('packagingCost').value);
+    const maintenanceCost = parseFloat(document.getElementById('maintenanceCost').value);
+    const licensingCost = parseFloat(document.getElementById('licensingCost').value);
+    const profitMultiplier = document.getElementById('profitMultiplier').value;
+
+    if (isNaN(totalIngredientCost) || isNaN(labourCost) || isNaN(electricityCost) || isNaN(packagingCost) || isNaN(maintenanceCost) || isNaN(licensingCost)) {
+        alert("Please enter valid numbers for all costs.");
+        return;
+    }
+
+    const subTotal = totalIngredientCost + labourCost + electricityCost + packagingCost + maintenanceCost + licensingCost;
+
+    let finalTotalCost;
+    if (profitMultiplier === "0.30") {
+        finalTotalCost = subTotal * (1 + parseFloat(profitMultiplier));
+    } else {
+        finalTotalCost = subTotal * parseFloat(profitMultiplier);
+    }
+
+    document.getElementById('finalTotalCost').textContent = finalTotalCost.toFixed(2);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     populateIngredientsTable();
     populateIngredientSelect();
 });
 
-    </script>
+</script>
 </body>
 </html>
